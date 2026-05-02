@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from fpl_analysis import get_league_data, get_current_standings, get_expected_standings, get_predicted_standings
 import json
 import os
 
@@ -50,6 +51,39 @@ def chart_data(slug):
     if not proj or "chart_data" not in proj:
         return jsonify({"error": "No chart data"}), 404
     return jsonify(proj["chart_data"])
+
+
+# FPL Draft Insights
+@app.route("/fpl")
+def fpl():
+    return render_template("fpl.html")
+
+@app.route("/fpl/analyse", methods=["POST"])
+def fpl_analyse():
+    league_id = request.form.get("league_id", "").strip()
+    if not league_id:
+        return render_template("fpl.html", error="Please enter a league ID.")
+    try:
+        n_sims = int(request.form.get("simulations", 1000))
+        if n_sims not in (1000, 10000):
+            n_sims = 1000
+        league_data = get_league_data(league_id)
+        league_name = league_data["league"]["name"]
+        standings, scatter = get_current_standings(league_data)
+        expected = get_expected_standings(league_data)
+        monte_carlo, position_cols = get_predicted_standings(league_data, n_simulations=n_sims)
+    except Exception as e:
+        return render_template("fpl.html", error=f"Could not load league {league_id}: {e}")
+    return render_template(
+        "fpl_results.html",
+        league_name=league_name,
+        standings=standings,
+        scatter=scatter,
+        expected=expected,
+        monte_carlo=monte_carlo,
+        position_cols=position_cols,
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

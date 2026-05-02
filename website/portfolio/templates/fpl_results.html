@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block title %}{{ league_name }} · FPL Draft Insights{% endblock %}
+
+{% block content %}
+<section class="fpl-results-page">
+  <div class="fpl-results-wrap">
+
+    <div class="rotate-hint">⟳ Rotate your device for the best experience</div>
+
+    <a href="/fpl" class="back-link">← Back to search</a>
+
+    <!-- Page header -->
+    <div class="results-hero">
+      <span class="fpl-badge">FPL Draft</span>
+      <h1 class="fpl-title">{{ league_name }}</h1>
+    </div>
+
+    <!-- ── Tabs ── -->
+    <div class="results-tabs">
+      <button class="results-tab active" data-tab="historical">Historical</button>
+      <button class="results-tab" data-tab="predictions">Predictions</button>
+    </div>
+
+    <!-- ── Current Standings ── -->
+    <div class="results-section" data-tab-content="historical">
+      <h2 class="results-section-title">Current Standings</h2>
+      <div class="table-wrap">
+        <table class="fpl-table">
+          <thead>
+            <tr>
+              <th>Pos</th><th>Player</th><th>W</th><th>D</th><th>L</th>
+              <th>PF</th><th>PA</th><th>Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in standings %}
+            <tr class="{% if row.Pos == 1 %}top-row{% endif %}">
+              <td class="mono">{{ row.Pos }}</td>
+              <td class="player-name">{{ row.Player }}</td>
+              <td class="mono">{{ row.W }}</td>
+              <td class="mono">{{ row.D }}</td>
+              <td class="mono">{{ row.L }}</td>
+              <td class="mono">{{ row.PF }}</td>
+              <td class="mono">{{ row.PA }}</td>
+              <td class="mono pts">{{ row.Pts }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Scatter: Avg Pts For vs Against ── -->
+    <div class="results-section" data-tab-content="historical">
+      <h2 class="results-section-title">Avg Points For vs Against</h2>
+      <p class="results-section-sub">Each point is a manager. Right is better, down is luckier.</p>
+      <div id="scatter-chart" class="chart-container"></div>
+    </div>
+
+    <!-- ── Expected Standings ── -->
+    <div class="results-section" data-tab-content="historical">
+      <h2 class="results-section-title">Expected Standings</h2>
+      <p class="results-section-sub">
+        Expected points measure luck. In any gameweek, if you score the highest FPL points you earn 3 expected points
+        because no one can beat you. If you rank 3rd in a 10-person league, you beat 7 but lose to 2 — so your
+        expected points are (7/9) × 3 = 2.33. A positive +/- means you're outperforming your luck.
+      </p>
+      <div class="table-wrap">
+        <table class="fpl-table">
+          <thead>
+            <tr>
+              <th>Player</th><th>xPos</th><th>xPts</th>
+              <th>Actual Pts</th><th>Actual Pos</th><th>+/-</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in expected %}
+            <tr>
+              <td class="player-name">{{ row.Player }}</td>
+              <td class="mono">{{ row.xPos }}</td>
+              <td class="mono">{{ row.xPts }}</td>
+              <td class="mono">{{ row['Actual Pts'] }}</td>
+              <td class="mono">{{ row['Actual Pos'] }}</td>
+              <td class="mono {% if row['+/-'] > 0 %}positive{% elif row['+/-'] < 0 %}negative{% endif %}">
+                {% if row['+/-'] > 0 %}+{% endif %}{{ row['+/-'] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Position Change ── -->
+    <div class="results-section" data-tab-content="historical">
+      <h2 class="results-section-title">Position Change vs Expected</h2>
+      <p class="results-section-sub">Expected position based on luck-adjusted points. Green = outperforming expectations, red = underperforming.</p>
+      <div id="slope-chart" class="chart-container chart-container--tall"></div>
+    </div>
+
+    <!-- ── Monte Carlo ── -->
+    <div class="results-section" data-tab-content="predictions">
+      <h2 class="results-section-title">Predicted Final Standings</h2>
+      <p class="results-section-sub">Based on Monte Carlo simulations using each manager's mean and standard deviation of weekly points.</p>
+      <div id="monte-carlo-chart" class="chart-container"></div>
+    </div>
+
+  </div>
+</section>
+
+<script id="expected-data" type="application/json">{{ expected | tojson }}</script>
+
+<script>
+  // ── Scatter chart ──
+  const scatterData = {{ scatter | tojson }};
+  Plotly.newPlot('scatter-chart', [{
+    x: scatterData.map(d => d.x),
+    y: scatterData.map(d => d.y),
+    mode: 'markers+text',
+    type: 'scatter',
+    text: scatterData.map(d => d.label),
+    textposition: 'top center',
+    marker: { size: 10, color: '#2d6a4f' },
+    textfont: { family: 'DM Sans', size: 12, color: '#1a1a18' }
+  }], {
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: { family: 'DM Sans', color: '#1a1a18', size: 12 },
+    xaxis: { title: 'Avg points for', gridcolor: '#e8e8e4', zeroline: false },
+    yaxis: { title: 'Avg points against', gridcolor: '#e8e8e4', zeroline: false },
+    margin: { t: 20, r: 20, b: 50, l: 60 }
+  }, { responsive: true });
+
+  // ── Slope chart: position change vs expected ──
+  const slopeData = JSON.parse(document.getElementById('expected-data').textContent);
+  const slopeTraces = slopeData.map(d => {
+    const improved = d['Actual Pos'] < d['xPos'];
+    const worse    = d['Actual Pos'] > d['xPos'];
+    const color    = improved ? '#2d6a4f' : (worse ? '#c0392b' : '#9e9e9e');
+    const endSymbol = improved ? 'triangle-up' : (worse ? 'triangle-down' : 'circle');
+    return {
+      x: [0, 1],
+      y: [d['xPos'], d['Actual Pos']],
+      mode: 'lines+markers+text',
+      line: { color, width: 2.5 },
+      marker: { color, size: [7, 11], symbol: ['circle', endSymbol] },
+      text: [d['Player'], d['Player']],
+      textposition: ['middle left', 'middle right'],
+      textfont: { family: 'DM Sans', size: 11, color: '#1a1a18' },
+      showlegend: false,
+      hovertemplate: `<b>${d['Player']}</b><br>Expected: ${d['xPos']}<br>Actual: ${d['Actual Pos']}<extra></extra>`
+    };
+  });
+  Plotly.newPlot('slope-chart', slopeTraces, {
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: { family: 'DM Sans', color: '#1a1a18', size: 12 },
+    xaxis: {
+      tickvals: [0, 1], ticktext: ['Expected', 'Actual'],
+      range: [-0.35, 1.35], showgrid: false, zeroline: false, fixedrange: true
+    },
+    yaxis: {
+      autorange: 'reversed', dtick: 1, showgrid: true,
+      gridcolor: '#e8e8e4', zeroline: false, fixedrange: true, title: 'Position'
+    },
+    margin: { t: 20, r: 140, b: 40, l: 140 },
+    showlegend: false
+  }, { responsive: true });
+
+  // ── Monte Carlo heatmap ──
+  const mcData = {{ monte_carlo | tojson }};
+  const posCols = {{ position_cols | tojson }};
+  const teams = mcData.map(d => d.Team);
+  const zValues = mcData.map(d => posCols.map(p => d[p]));
+
+  Plotly.newPlot('monte-carlo-chart', [{
+    type: 'heatmap',
+    z: zValues,
+    x: posCols.map((_, i) => `${i + 1}${['st','nd','rd'][i] || 'th'}`),
+    y: teams,
+    colorscale: [[0, '#f0fdf4'], [1, '#2d6a4f']],
+    text: zValues.map(row => row.map(v => v + '%')),
+    texttemplate: '%{text}',
+    textfont: { size: 11 },
+    showscale: false,
+    hoverongaps: false
+  }], {
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: { family: 'DM Sans', color: '#1a1a18', size: 12 },
+    xaxis: { title: 'Finish position', side: 'top' },
+    yaxis: { autorange: 'reversed' },
+    margin: { t: 40, r: 20, b: 20, l: 80 }
+  }, { responsive: true });
+
+  // ── Tabs ──
+  document.querySelectorAll('.results-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.results-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('[data-tab-content]').forEach(section => {
+        section.style.display = section.dataset.tabContent === target ? '' : 'none';
+      });
+      // Resize Plotly charts in the newly visible tab so they render correctly
+      document.querySelectorAll(`[data-tab-content="${target}"] .chart-container`).forEach(el => {
+        if (el.id) Plotly.relayout(el.id, {});
+      });
+    });
+  });
+
+  // ── Sortable tables ──
+  document.querySelectorAll('.fpl-table').forEach(table => {
+    const ths = table.querySelectorAll('thead th');
+    ths.forEach((th, colIdx) => {
+      th.classList.add('sortable-th');
+      th.addEventListener('click', () => {
+        const asc = th.dataset.dir !== 'asc';
+        ths.forEach(h => { h.dataset.dir = ''; h.querySelector('.sort-arrow')?.remove(); });
+        th.dataset.dir = asc ? 'asc' : 'desc';
+        const arrow = document.createElement('span');
+        arrow.className = 'sort-arrow';
+        arrow.textContent = asc ? ' ▲' : ' ▼';
+        th.appendChild(arrow);
+
+        const tbody = table.querySelector('tbody');
+        Array.from(tbody.querySelectorAll('tr'))
+          .sort((a, b) => {
+            const av = a.cells[colIdx].textContent.trim().replace(/[+%]/g, '');
+            const bv = b.cells[colIdx].textContent.trim().replace(/[+%]/g, '');
+            const an = parseFloat(av), bn = parseFloat(bv);
+            if (!isNaN(an) && !isNaN(bn)) return asc ? an - bn : bn - an;
+            return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+          })
+          .forEach(row => tbody.appendChild(row));
+      });
+    });
+  });
+</script>
+{% endblock %}

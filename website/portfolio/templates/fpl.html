@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}FPL Draft Insights{% endblock %}
+
+{% block content %}
+<section class="fpl-landing">
+  <div class="fpl-wrap">
+
+    <a href="/" class="back-link">← Back to projects</a>
+
+    <span class="fpl-badge">FPL Draft</span>
+    <h1 class="fpl-title">Fpl Draft Insights</h1>
+    <p class="fpl-sub">Enter your mini-league ID to explore standings, points progression, and Monte Carlo finish probabilities.</p>
+
+    <div class="fpl-card">
+      {% if error %}
+      <p class="fpl-error">{{ error }}</p>
+      {% endif %}
+      <form method="POST" action="/fpl/analyse" id="fpl-form">
+
+        <label class="fpl-label" for="league_id">League ID</label>
+        <div class="fpl-input-row">
+          <input type="text"
+                 id="league_id"
+                 name="league_id"
+                 placeholder="e.g. 19760"
+                 required
+                 autocomplete="off" />
+          <button type="submit" class="btn fpl-btn-primary">Analyse</button>
+        </div>
+
+        <div class="fpl-settings">
+          <p class="fpl-settings-header">Settings</p>
+          <div class="fpl-sim-toggle">
+            <span class="fpl-label" style="margin-bottom:0">Simulations for Predicted Tables</span>
+            <div class="fpl-toggle-group">
+              <label class="fpl-toggle-opt">
+                <input type="radio" name="simulations" value="1000" checked />
+                <span>
+                  <strong>1,000</strong>
+                  <small>Faster</small>
+                </span>
+              </label>
+              <label class="fpl-toggle-opt">
+                <input type="radio" name="simulations" value="10000" />
+                <span>
+                  <strong>10,000</strong>
+                  <small>Deep insights</small>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="fpl-hint">
+        <details>
+          <summary>How do I find my league ID?</summary>
+          <div class="fpl-hint-body">
+            <ol>
+              <li>Open the FPL Draft app or website</li>
+              <li>Go to <strong>Leagues</strong> and select your mini-league</li>
+              <li>The league ID is the number in the URL — e.g. <code>/league/<strong>19760</strong>/details</code></li>
+            </ol>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Feature cards -->
+    <div class="fpl-features">
+      <div class="fpl-feature">
+        <div class="fpl-feature-icon">📊</div>
+        <div class="fpl-feature-label">Standings</div>
+        <div class="fpl-feature-desc">Live league table with points and rank</div>
+      </div>
+      <div class="fpl-feature">
+        <div class="fpl-feature-icon">📈</div>
+        <div class="fpl-feature-label">Points over time</div>
+        <div class="fpl-feature-desc">Gameweek-by-gameweek progression</div>
+      </div>
+      <div class="fpl-feature">
+        <div class="fpl-feature-icon">🎲</div>
+        <div class="fpl-feature-label">Finish prediction</div>
+        <div class="fpl-feature-desc">Monte Carlo simulated final standings</div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<div id="fpl-loader" class="fpl-loader-overlay" aria-hidden="true">
+  <div class="fpl-loader-box">
+    <div class="fpl-spinner"></div>
+    <p class="fpl-loader-text">Activating glutes</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('fpl-form').addEventListener('submit', function() {
+    const sims = this.querySelector('input[name="simulations"]:checked').value;
+    const msg = sims === '1000' ? 'Activating glutes' : 'Activating glutes (deep tissue)';
+    document.querySelector('.fpl-loader-text').textContent = msg;
+    document.getElementById('fpl-loader').classList.add('active');
+  });
+</script>
+{% endblock %}

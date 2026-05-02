@@ -5,7 +5,7 @@ __pycache__/
 dist/
 build/
 .env
-venv/
+bensportfolio-env/
 .venv/
 
 # Jupyter
@@ -15,6 +15,9 @@ venv/
 # Flask
 instance/
 *.sqlite
+
+# FPL API cache
+website/portfolio/.cache/
 
 # OS
 .DS_Store
