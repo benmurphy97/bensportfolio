@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Home · Portfolio{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-label">Data Scientist</p>
+    <h1 class="hero-title">Hi, I'm <span class="accent">Your Name</span>.<br>I turn data into decisions.</h1>
+    <p class="hero-sub">I build models, visualisations, and tools that make complex data understandable.</p>
+    <a href="#projects" class="btn">View Projects</a>
+  </div>
+</section>
+
+<!-- Projects -->
+<section class="section" id="projects">
+  <div class="container">
+    <h2 class="section-title">Projects</h2>
+
+    <!-- Tag filter (HTMX) -->
+    <div class="tag-filter">
+      <button class="tag-btn active"
+        hx-get="/projects/filter"
+        hx-target="#project-grid"
+        hx-swap="innerHTML"
+        onclick="setActive(this)">All</button>
+      {% for tag in tags %}
+      <button class="tag-btn"
+        hx-get="/projects/filter?tag={{ tag }}"
+        hx-target="#project-grid"
+        hx-swap="innerHTML"
+        onclick="setActive(this)">{{ tag }}</button>
+      {% endfor %}
+    </div>
+
+    <!-- Project cards -->
+    <div id="project-grid">
+      {% include "partials/project_cards.html" %}
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="section section--alt" id="contact">
+  <div class="container container--narrow">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Have a project in mind or just want to chat? Drop me a message.</p>
+
+    <form hx-post="/contact" hx-target="#contact-result" hx-swap="innerHTML">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Jane Smith" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+      </div>
+      <button type="submit" class="btn">Send Message</button>
+    </form>
+    <div id="contact-result"></div>
+  </div>
+</section>
+
+{% endblock %}

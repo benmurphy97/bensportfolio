@@ -1,0 +1,243 @@
+/* ── Variables ── */
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --border: #e8e8e4;
+  --text: #1a1a18;
+  --text-muted: #6b6b66;
+  --accent: #2d6a4f;
+  --accent-light: #d8f3dc;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --max-w: 1100px;
+  --radius: 8px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ── Layout ── */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; }
+.container--narrow { max-width: 680px; }
+
+/* ── Header ── */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+.logo {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+nav { display: flex; gap: 2rem; }
+nav a {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--text); }
+
+/* ── Hero ── */
+.hero {
+  padding: 7rem 2rem 6rem;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+.accent { color: var(--accent); }
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin-bottom: 2.5rem;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.6rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn--outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn--outline:hover { border-color: var(--text); opacity: 1; }
+
+/* ── Sections ── */
+.section { padding: 5rem 0; }
+.section--alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.section-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.section-sub {
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+}
+
+/* ── Tag filter ── */
+.tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+.tag-btn {
+  padding: 0.4rem 1rem;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.tag-btn:hover, .tag-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── Project grid ── */
+#project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+.card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: 4px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+.card-summary { font-size: 0.9rem; color: var(--text-muted); flex: 1; }
+.card-link {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* ── Project detail ── */
+.project-hero { padding: 4rem 0 3rem; border-bottom: 1px solid var(--border); }
+.back-link { font-size: 0.9rem; color: var(--text-muted); display: inline-block; margin-bottom: 1.5rem; }
+.back-link:hover { color: var(--text); }
+.project-tags { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.project-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+.project-summary { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 1.5rem; }
+.project-links { display: flex; gap: 1rem; }
+.project-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding-top: 3rem; }
+.project-body h2 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 1rem; }
+#chart { width: 100%; min-height: 300px; }
+
+/* ── Contact form ── */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+label { font-size: 0.85rem; font-weight: 500; }
+input, textarea {
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.contact-success {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
+/* ── Footer ── */
+.site-footer {
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .form-row { grid-template-columns: 1fr; }
+  .project-body { grid-template-columns: 1fr; }
+  .hero { padding: 4rem 1.5rem 3rem; }
+}

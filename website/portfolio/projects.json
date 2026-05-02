@@ -1,0 +1,51 @@
+[
+  {
+    "slug": "sales-forecast",
+    "title": "Sales Forecasting Model",
+    "summary": "Time-series forecasting using Prophet and custom seasonality components.",
+    "description": "A full pipeline for forecasting retail sales across 50 stores. Built with Facebook Prophet, with custom regressors for promotional events and holiday effects. Deployed as an interactive dashboard.",
+    "tags": ["Python", "Forecasting", "Plotly"],
+    "github": "https://github.com/yourname/sales-forecast",
+    "live": "",
+    "image": "",
+    "chart_data": {
+      "type": "line",
+      "x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      "actual": [120, 135, 128, 145, 160, 155],
+      "predicted": [118, 133, 130, 142, 158, 157]
+    }
+  },
+  {
+    "slug": "customer-segmentation",
+    "title": "Customer Segmentation",
+    "summary": "K-means and UMAP-based clustering to identify distinct customer personas.",
+    "description": "Unsupervised clustering pipeline using K-means with UMAP dimensionality reduction for visualisation. Identified 6 distinct customer segments used to personalise marketing campaigns.",
+    "tags": ["Python", "ML", "Clustering", "Plotly"],
+    "github": "https://github.com/yourname/customer-seg",
+    "live": "",
+    "image": "",
+    "chart_data": {
+      "type": "scatter",
+      "clusters": [
+        {"x": [1, 2, 1.5], "y": [3, 3.5, 2.8], "label": "Segment A"},
+        {"x": [5, 6, 5.5], "y": [1, 1.5, 0.8], "label": "Segment B"},
+        {"x": [3, 3.5, 2.8], "y": [6, 5.5, 6.2], "label": "Segment C"}
+      ]
+    }
+  },
+  {
+    "slug": "nlp-sentiment",
+    "title": "NLP Sentiment Analysis",
+    "summary": "Fine-tuned BERT model for sentiment analysis on product reviews.",
+    "description": "Fine-tuned a DistilBERT model on 100k product reviews. Achieved 93% accuracy on a held-out test set. Includes an interactive demo where you can enter your own text.",
+    "tags": ["Python", "NLP", "Deep Learning"],
+    "github": "https://github.com/yourname/nlp-sentiment",
+    "live": "",
+    "image": "",
+    "chart_data": {
+      "type": "bar",
+      "labels": ["Positive", "Neutral", "Negative"],
+      "values": [62, 21, 17]
+    }
+  }
+]

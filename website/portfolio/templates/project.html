@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} · Portfolio{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+  <div class="container">
+    <a href="/" class="back-link">← Back</a>
+    <div class="project-tags">
+      {% for tag in project.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    <h1 class="project-title">{{ project.title }}</h1>
+    <p class="project-summary">{{ project.summary }}</p>
+    <div class="project-links">
+      {% if project.github %}
+      <a href="{{ project.github }}" class="btn btn--outline" target="_blank">GitHub</a>
+      {% endif %}
+      {% if project.live %}
+      <a href="{{ project.live }}" class="btn" target="_blank">Live Demo</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container project-body">
+
+    <!-- Description -->
+    <div class="project-description">
+      <h2>About this project</h2>
+      <p>{{ project.description }}</p>
+    </div>
+
+    <!-- Chart -->
+    {% if project.chart_data %}
+    <div class="project-chart">
+      <h2>Visualisation</h2>
+      <div id="chart"></div>
+    </div>
+
+    <script>
+      const chartData = {{ project.chart_data | tojson }};
+
+      if (chartData.type === "line") {
+        Plotly.newPlot("chart", [
+          { x: chartData.x, y: chartData.actual, name: "Actual", mode: "lines+markers", line: { color: "#2d6a4f" } },
+          { x: chartData.x, y: chartData.predicted, name: "Predicted", mode: "lines+markers", line: { color: "#74c69d", dash: "dot" } }
+        ], { paper_bgcolor: "transparent", plot_bgcolor: "transparent", font: { family: "DM Sans", color: "#333" } });
+
+      } else if (chartData.type === "bar") {
+        Plotly.newPlot("chart", [
+          { x: chartData.labels, y: chartData.values, type: "bar", marker: { color: ["#2d6a4f", "#74c69d", "#d4a373"] } }
+        ], { paper_bgcolor: "transparent", plot_bgcolor: "transparent", font: { family: "DM Sans", color: "#333" } });
+
+      } else if (chartData.type === "scatter") {
+        const traces = chartData.clusters.map(c => ({
+          x: c.x, y: c.y, name: c.label, mode: "markers",
+          marker: { size: 12 }
+        }));
+        Plotly.newPlot("chart", traces, {
+          paper_bgcolor: "transparent", plot_bgcolor: "transparent",
+          font: { family: "DM Sans", color: "#333" }
+        });
+      }
+    </script>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

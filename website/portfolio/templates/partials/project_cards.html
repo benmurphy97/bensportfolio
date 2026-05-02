@@ -1,0 +1,12 @@
+{% for project in projects %}
+<a href="/project/{{ project.slug }}" class="project-card">
+  <div class="card-tags">
+    {% for tag in project.tags %}
+    <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  <h3 class="card-title">{{ project.title }}</h3>
+  <p class="card-summary">{{ project.summary }}</p>
+  <span class="card-link">View project →</span>
+</a>
+{% endfor %}
