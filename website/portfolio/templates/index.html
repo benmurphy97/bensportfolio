@@ -7,7 +7,8 @@
 <section class="hero">
   <div class="hero-inner">
     <p class="hero-label">Data Scientist</p>
-    <h1 class="hero-title">Hi, I'm <span class="accent">Ben Murphy</span>.<br>I mess around with data</h1>
+    <h1 class="hero-title">Hi, I'm <span class="accent">Ben Murphy</span>.
+    <p class="hero-sub">"Big Data, BigQuery, Big Fun" — Michael Scott <em>(probably)</em></p>
     <a href="#writing" class="btn">Read my writing</a>
   </div>
 </section>
@@ -24,31 +25,5 @@
   </div>
 </section>
 
-<!-- Contact -->
-<section class="section section--alt" id="contact">
-  <div class="container container--narrow">
-    <h2 class="section-title">Get in Touch</h2>
-    <p class="section-sub">Have a project in mind or just want to chat? Drop me a message.</p>
-
-    <form hx-post="/contact" hx-target="#contact-result" hx-swap="innerHTML">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Jane Smith" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="jane@example.com" required />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
-      </div>
-      <button type="submit" class="btn">Send Message</button>
-    </form>
-    <div id="contact-result"></div>
-  </div>
-</section>
 
 {% endblock %}
