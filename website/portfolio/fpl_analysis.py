@@ -1,39 +1,22 @@
 import requests
 import numpy as np
 import pandas as pd
-import json
-import os
-import time
-
-# ── Cache ──────────────────────────────────────────────────────────────────────
-
-CACHE_DIR = os.path.join(os.path.dirname(__file__), ".cache")
-CACHE_TTL = 300  # seconds (5 minutes)
-
-def _cache_path(key):
-    os.makedirs(CACHE_DIR, exist_ok=True)
-    safe_key = key.replace("/", "_").replace(":", "_").replace("?", "_")
-    return os.path.join(CACHE_DIR, f"{safe_key}.json")
-
-def fetch_json(url):
-    """Fetch JSON from URL with simple file-based cache."""
-    path = _cache_path(url)
-    if os.path.exists(path):
-        age = time.time() - os.path.getmtime(path)
-        if age < CACHE_TTL:
-            with open(path) as f:
-                return json.load(f)
-    response = requests.get(url, timeout=15)
-    response.raise_for_status()
-    data = response.json()
-    with open(path, "w") as f:
-        json.dump(data, f)
-    return data
+import cache
 
 # ── Data fetchers ──────────────────────────────────────────────────────────────
 
 def get_league_data(league_id):
-    return fetch_json(f"https://draft.premierleague.com/api/league/{league_id}/details")
+    data = cache.get(league_id)
+    if data:
+        return data
+    response = requests.get(
+        f"https://draft.premierleague.com/api/league/{league_id}/details",
+        timeout=15
+    )
+    response.raise_for_status()
+    data = response.json()
+    cache.set(league_id, data)
+    return data
 
 # ── Current Standings ──────────────────────────────────────────────────────────
 

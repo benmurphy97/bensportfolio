@@ -18,6 +18,7 @@ instance/
 
 # FPL API cache
 website/portfolio/.cache/
+website/portfolio/fpl_cache.db
 
 # OS
 .DS_Store

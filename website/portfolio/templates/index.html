@@ -7,36 +7,19 @@
 <section class="hero">
   <div class="hero-inner">
     <p class="hero-label">Data Scientist</p>
-    <h1 class="hero-title">Hi, I'm <span class="accent">Your Name</span>.<br>I turn data into decisions.</h1>
-    <p class="hero-sub">I build models, visualisations, and tools that make complex data understandable.</p>
-    <a href="#projects" class="btn">View Projects</a>
+    <h1 class="hero-title">Hi, I'm <span class="accent">Ben Murphy</span>.<br>I mess around with data</h1>
+    <a href="#writing" class="btn">Read my writing</a>
   </div>
 </section>
 
-<!-- Projects -->
-<section class="section" id="projects">
+<!-- Writing -->
+<section class="section" id="writing">
   <div class="container">
-    <h2 class="section-title">Projects</h2>
+    <h2 class="section-title">Writing</h2>
+    <p class="section-sub">Articles I've published on Medium.</p>
 
-    <!-- Tag filter (HTMX) -->
-    <div class="tag-filter">
-      <button class="tag-btn active"
-        hx-get="/projects/filter"
-        hx-target="#project-grid"
-        hx-swap="innerHTML"
-        onclick="setActive(this)">All</button>
-      {% for tag in tags %}
-      <button class="tag-btn"
-        hx-get="/projects/filter?tag={{ tag }}"
-        hx-target="#project-grid"
-        hx-swap="innerHTML"
-        onclick="setActive(this)">{{ tag }}</button>
-      {% endfor %}
-    </div>
-
-    <!-- Project cards -->
-    <div id="project-grid">
-      {% include "partials/project_cards.html" %}
+    <div id="article-grid">
+      {% include "partials/article_cards.html" %}
     </div>
   </div>
 </section>

@@ -1,0 +1,21 @@
+{% if articles %}
+  {% for article in articles %}
+  <a href="{{ article.link }}" target="_blank" rel="noopener" class="article-card">
+    {% if article.thumbnail %}
+    <div class="article-thumb">
+      <img src="{{ article.thumbnail }}" alt="{{ article.title }}" loading="lazy" />
+    </div>
+    {% else %}
+    <div class="article-thumb article-thumb--placeholder"></div>
+    {% endif %}
+    <div class="article-body">
+      <p class="article-date">{{ article.published }}</p>
+      <h3 class="article-title">{{ article.title }}</h3>
+      <p class="article-excerpt">{{ article.description | truncate(120) }}</p>
+      <span class="card-link">Read on Medium →</span>
+    </div>
+  </a>
+  {% endfor %}
+{% else %}
+  <p class="section-sub">No articles found — check back soon.</p>
+{% endif %}

@@ -97,11 +97,18 @@
 </div>
 
 <script>
-  document.getElementById('fpl-form').addEventListener('submit', function() {
+  document.getElementById('fpl-form').addEventListener('submit', function(e) {
+    e.preventDefault();
     const sims = this.querySelector('input[name="simulations"]:checked').value;
     const msg = sims === '1000' ? 'Activating glutes' : 'Activating glutes (deep tissue)';
     document.querySelector('.fpl-loader-text').textContent = msg;
     document.getElementById('fpl-loader').classList.add('active');
+    const form = this;
+    requestAnimationFrame(() => setTimeout(() => form.submit(), 50));
+  });
+
+  window.addEventListener('pageshow', function() {
+    document.getElementById('fpl-loader').classList.remove('active');
   });
 </script>
 {% endblock %}
